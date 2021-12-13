@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter"); // name of the solidity contract
-  const greeter = await Greeter.deploy("Hello, Hardhat!"); // parameters are the ones from the constructor
+  const contract = await hre.ethers.getContractFactory("Test"); // name of the solidity contract
+  const deployedContract = await contract.deploy(2,5);          // parameters are the ones from the constructor
 
-  await greeter.deployed(); // await for contract to deploy to continue further more
+  await deployedContract.deployed();                            // await for contract to deploy to continue further more
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("Contract deployed to:", deployedContract.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

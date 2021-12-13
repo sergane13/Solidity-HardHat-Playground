@@ -35,7 +35,7 @@ module.exports = {
     },
     polygon:
     {
-      url: "https://mainnet.infura.io/v3/cf9c3560598d4eac8eabb0d7b278ff49",
+      url: "https://polygon-mumbai.infura.io/v3/cf9c3560598d4eac8eabb0d7b278ff49",
       accounts: [SECRET_KEY]
     }    
   }
