@@ -2,71 +2,11 @@
 
 pragma solidity 0.8.11;
 
-contract MultiSigWallet
+import "./Modifiers.sol";
+
+contract MultiSigWallet is Modifiers
 {
-    // array with owners of the wallet
-    address[] private owners; 
-    address private initiator;
-
-    // store in a mapping with the value bools, if an address is an owner
-    mapping(address => bool) private checkOwners;
-
-    // struct of transaction
-    struct Transaction
-    {
-        address recipient;
-        uint256 value;
-        bytes data;
-        bool executed;
-        uint256 numberOfConfirmations;
-    }
-
-    uint256 private confirmationsRequired;
-
-    // index of transaction
-    uint256 private transactionIndex = 0;
-
-    // array with all transactions done by this contract    
-    Transaction[] private allTransactions;
     
-    /*
-        mapping to know who approved or not a transaction
-        uint -> transaction index
-        address -> address of the owner
-        bool -> if it has been approved by the owner
-    */
-    mapping(uint256 => mapping(address => bool)) private transactionApprovals;
-
-
-    /*
-        ### Modifiers ###
-    */
-
-    modifier isTheOwner(address sender)
-    {
-        require(checkOwners[sender], "Not the owner");
-        _;
-    }
-
-    modifier txExecutedOnce(uint256 txId)
-    {
-        require(!allTransactions[txId].executed, "tx already executed");
-        _;
-    }
-
-    modifier txExists(uint256 txId)
-    {
-        require(txId < transactionIndex, "tx does not exists");
-        _;
-    }
-
-    modifier txNotConfirmed(uint256 txId)
-    {
-        require(!transactionApprovals[txId][msg.sender], "tx already confirmed");
-        _;
-    }
-    
-
     // init the contract
     constructor(address[] memory _owners, uint256 _confirmationsRequired) 
     {   
@@ -88,15 +28,7 @@ contract MultiSigWallet
             checkOwners[owners[i]] = true;
         }
     }
-
-    
-    // get the owners of the contract
-    function getOwners() external view returns(address[] memory)
-    {
-        return owners;
-    }
-
-
+   
     // default methods to receive tokens into contract
     fallback() external payable{}
     receive() external payable{}
