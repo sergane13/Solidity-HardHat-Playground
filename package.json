@@ -1,5 +1,5 @@
 {
-  "name": "solidity-ganache-testing",
+  "name": "solidity-hard-hat",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sergane13/Solidity-Ganache-testing.git"
+    "url": "git+https://github.com/sergane13/Solidity-HardHat.git"
   },
   "author": "serban",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sergane13/Solidity-Ganache-testing/issues"
+    "url": "https://github.com/sergane13/Solidity-HardHat/issues"
   },
-  "homepage": "https://github.com/sergane13/Solidity-Ganache-testing#readme",
+  "homepage": "https://github.com/sergane13/Solidity-HardHat#readme",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
@@ -25,6 +25,8 @@
     "hardhat": "^2.7.1"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.4.1",
+    "base64-sol": "^1.1.0",
     "dotenv": "^10.0.0"
   }
 }
