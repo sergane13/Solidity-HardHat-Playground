@@ -31,7 +31,7 @@ module.exports = {
     rinkeby:
     {
       url: "https://rinkeby.infura.io/v3/3e7a4ea8738f4a3d9810ee95db1ab23f",
-      accounts: [SECRET_KEY]
+      accounts: [SECRET_KEY],
     },
     polygon:
     {
