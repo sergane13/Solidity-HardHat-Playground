@@ -6,6 +6,7 @@ contract MultiSigWallet
 {
     // array with owners of the wallet
     address[] private owners; 
+    address private initiator;
 
     // store in a mapping with the value bools, if an address is an owner
     mapping(address => bool) private checkOwners;
@@ -112,6 +113,8 @@ contract MultiSigWallet
         Transaction memory _tx = Transaction(recipient, value, data, false, 0);
         allTransactions.push(_tx);
 
+        initiator = msg.sender;
+
         transactionIndex += 1;
     }
 
@@ -138,21 +141,54 @@ contract MultiSigWallet
         txExecutedOnce(txId) 
         txExists(txId) 
     {
-        uint256 confirmationNumber = 0 ;
+        Transaction memory _tx = allTransactions[txId];
 
-        for(uint256 i = 0; i < owners.length; i++)
-        {
-            if(transactionApprovals[txId][owners[i]])
-            {
-                confirmationNumber += 1;
-            }
-        }
+        require(_tx.numberOfConfirmations >= confirmationsRequired, "Not enough confirmations");
+    
+        _tx.executed = true;
 
-        require();
+        (bool succes, ) = payable(_tx.recipient).call{value: _tx.value}(_tx.data);
+
+        require(succes, "Transaction reverted");
     }
 
     
-    // Execute transaction execute transaction if mimum requirments are done
-    // Revoke approvement from a transaction 
-    // Revoke transaction from execution
+    // revoke the confirmation
+    function revokeApproval(
+        uint256 txId) 
+        external
+        isTheOwner(msg.sender)
+        txExecutedOnce(txId)
+        txExists(txId) 
+    {
+        Transaction memory _tx = allTransactions[txId];
+
+        require(transactionApprovals[txId][msg.sender] == true, "tx not approved");
+
+        _tx.numberOfConfirmations -= 1;
+
+        transactionApprovals[txId][msg.sender] = false;
+    }
+
+
+    // revoke the transaction
+    function revokeTx(
+        uint256 txId) 
+        external
+        isTheOwner(msg.sender)
+        txExecutedOnce(txId)
+        txExists(txId)
+    {
+        require(txId == allTransactions.length - 1, "tx must be the last one");
+        require(msg.sender == initiator, "the initiator can revoke submision");
+
+        delete allTransactions[allTransactions.length - 1];
+
+        for(uint256 i = 0; i < owners.length; i++)
+        {
+            transactionApprovals[txId][owners[i]] = false;
+        }
+
+        transactionIndex -= 1;
+    }
 }
