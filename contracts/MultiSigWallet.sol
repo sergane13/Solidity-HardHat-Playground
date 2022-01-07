@@ -10,7 +10,7 @@ contract MultiSigWallet
     // mapping to store owners of the contract as bool
     // mimum required votes
 
-    // onlyOwners can submit verifications
+    // onlyOwners can submit verifications of
 
     // mapping with txid => address => bool to check if the transaction members approved 
     // Array of transactions done
