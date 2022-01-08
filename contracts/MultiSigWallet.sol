@@ -42,13 +42,12 @@ contract MultiSigWallet is Modifiers{
     ) 
         external 
         isTheOwner(msg.sender) 
-    {
+    {   
+        require(address(this).balance > value, "Not enough tokens to extract");
         Transaction memory _tx = Transaction(recipient, value, data, false, 0);
         allTransactions.push(_tx);
 
         initiator = msg.sender;
-
-        transactionIndex += 1;
     }
 
     // approve tx to be executed
@@ -80,9 +79,9 @@ contract MultiSigWallet is Modifiers{
     
         _tx.executed = true;
 
-        (bool succes, ) = payable(_tx.recipient).call{value: _tx.value}(_tx.data);
+        (bool succes, ) = _tx.recipient.call{value: _tx.value}(_tx.data);
 
-        require(succes, "Transaction reverted");
+        require(succes, "Transaction reverted -custom-");
     }
 
     // revoke the confirmation
@@ -120,7 +119,5 @@ contract MultiSigWallet is Modifiers{
         for(uint256 i = 0; i < owners.length; i++){
             transactionApprovals[txId][owners[i]] = false;
         }
-
-        transactionIndex -= 1;
     }
 }

@@ -3,7 +3,7 @@
 pragma solidity 0.8.11;
 
 contract Modifiers{
-    
+
     // array with owners of the wallet
     address[] public owners; 
 
@@ -25,9 +25,6 @@ contract Modifiers{
     // confirmations required for tx to pass
     uint256 public confirmationsRequired;
 
-    // index of transaction
-    uint256 public transactionIndex = 0;
-
     // array with all transactions done by this contract    
     Transaction[] public allTransactions;
     
@@ -38,7 +35,6 @@ contract Modifiers{
         bool -> if it has been approved by the owner
     */
     mapping(uint256 => mapping(address => bool)) public transactionApprovals;
-
 
 
     /*
@@ -56,7 +52,7 @@ contract Modifiers{
     }
 
     modifier txExists(uint256 txId){
-        require(txId < transactionIndex, "tx does not exists");
+        require(txId < allTransactions.length, "tx does not exists");
         _;
     }
 

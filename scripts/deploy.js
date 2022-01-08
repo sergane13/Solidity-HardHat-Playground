@@ -2,8 +2,9 @@ async function main() {
   const multiSigWallet = await ethers.getContractFactory("MultiSigWallet")
 
   // Start deployment, returning a promise that resolves to a contract object
-  const contract = await multiSigWallet.deploy(["0x22cFDCba61311a188A238D5C3F4fd6D7bEC2EccC", "0x6EFbCd4f9D1ec8E1BEF2FE4FFd0FEF3Cd29f2aAA"], 1);
+  const contract = await multiSigWallet.deploy(["0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266", "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"], 1);
   //const contract = await multiSigWallet.deploy(120);
+  console.log(contract.abi);
   console.log("Contract deployed to address:", contract.address)
 }
 
