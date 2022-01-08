@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.11;
 
-contract Modifiers
-{
+contract Modifiers{
+    
     // array with owners of the wallet
     address[] public owners; 
 
@@ -14,8 +14,7 @@ contract Modifiers
     mapping(address => bool) public checkOwners;
 
     // struct of transaction
-    struct Transaction
-    {
+    struct Transaction{
         address recipient;
         uint256 value;
         bytes data;
@@ -46,26 +45,22 @@ contract Modifiers
         ### Modifiers ###
     */
 
-    modifier isTheOwner(address sender)
-    {
+    modifier isTheOwner(address sender){
         require(checkOwners[sender], "Not the owner");
         _;
     }
 
-    modifier txExecutedOnce(uint256 txId)
-    {
+    modifier txExecutedOnce(uint256 txId){
         require(!allTransactions[txId].executed, "tx already executed");
         _;
     }
 
-    modifier txExists(uint256 txId)
-    {
+    modifier txExists(uint256 txId){
         require(txId < transactionIndex, "tx does not exists");
         _;
     }
 
-    modifier txNotConfirmed(uint256 txId)
-    {
+    modifier txNotConfirmed(uint256 txId){
         require(!transactionApprovals[txId][msg.sender], "tx already confirmed");
         _;
     }

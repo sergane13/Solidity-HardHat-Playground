@@ -4,8 +4,7 @@ pragma solidity 0.8.11;
 
 import "./Modifiers.sol";
 
-contract MultiSigWallet is Modifiers
-{
+contract MultiSigWallet is Modifiers{
     
     // init the contract
     constructor(address[] memory _owners, uint256 _confirmationsRequired) 
@@ -17,8 +16,7 @@ contract MultiSigWallet is Modifiers
 
         address owner;
 
-        for(uint256 i = 0; i < _owners.length; i++)
-        {   
+        for(uint256 i = 0; i < _owners.length; i++){   
             require(_owners[i] != address(0), "Address null");
 
             owner = _owners[i];
@@ -33,12 +31,15 @@ contract MultiSigWallet is Modifiers
     fallback() external payable{}
     receive() external payable{}
 
-
-    // submit transaction to be executed
+    ///@dev submits tx for execution 
+    ///@param recipient the address that will receive the tx
+    ///@param value tokens amount to send
+    ///@param data info to send into tx
     function submit(
         address recipient, 
         uint256 value, 
-        bytes calldata data) 
+        bytes calldata data
+    ) 
         external 
         isTheOwner(msg.sender) 
     {
@@ -50,10 +51,10 @@ contract MultiSigWallet is Modifiers
         transactionIndex += 1;
     }
 
-
     // approve tx to be executed
     function approve(
-        uint txId) 
+        uint txId
+    ) 
         external 
         isTheOwner(msg.sender) 
         txExecutedOnce(txId) 
@@ -64,10 +65,10 @@ contract MultiSigWallet is Modifiers
         transactionApprovals[txId][msg.sender] = true;
     }
 
-
     // execute transaction
     function execute(
-        uint txId)
+        uint txId
+    )
         external
         isTheOwner(msg.sender)
         txExecutedOnce(txId) 
@@ -84,10 +85,10 @@ contract MultiSigWallet is Modifiers
         require(succes, "Transaction reverted");
     }
 
-    
     // revoke the confirmation
     function revokeApproval(
-        uint256 txId) 
+        uint256 txId
+    ) 
         external
         isTheOwner(msg.sender)
         txExecutedOnce(txId)
@@ -102,10 +103,10 @@ contract MultiSigWallet is Modifiers
         transactionApprovals[txId][msg.sender] = false;
     }
 
-
     // revoke the transaction
     function revokeTx(
-        uint256 txId) 
+        uint256 txId
+    ) 
         external
         isTheOwner(msg.sender)
         txExecutedOnce(txId)
@@ -116,8 +117,7 @@ contract MultiSigWallet is Modifiers
 
         delete allTransactions[allTransactions.length - 1];
 
-        for(uint256 i = 0; i < owners.length; i++)
-        {
+        for(uint256 i = 0; i < owners.length; i++){
             transactionApprovals[txId][owners[i]] = false;
         }
 
