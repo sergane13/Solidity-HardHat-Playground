@@ -3,7 +3,7 @@ const utils = require("ethers").utils;
 
 // scripts/index.js
 async function main () {
-    const address = "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0";
+    const address = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
     const SECRET_KEY = process.env.SECRET_KEY_LOCAL;
 
@@ -17,7 +17,7 @@ async function main () {
     }
 
     const signer = new ethers.Wallet(SECRET_KEY, provider);
-    await signer.signTransaction(tx);
+    wait signer.signTransaction(tx);
 
     const Signer = signer.connect(provider);
 

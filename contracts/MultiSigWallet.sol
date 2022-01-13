@@ -26,6 +26,11 @@ contract MultiSigWallet is Modifiers{
             checkOwners[owners[i]] = true;
         }
     }
+
+    function getId() external view returns(uint256)
+    {
+        return address(this).balance;
+    }
    
     // default methods to receive tokens into contract
     fallback() external payable{}
@@ -42,12 +47,15 @@ contract MultiSigWallet is Modifiers{
     ) 
         external 
         isTheOwner(msg.sender) 
+        returns(bool)
     {   
         require(address(this).balance > value, "Not enough tokens to extract");
         Transaction memory _tx = Transaction(recipient, value, data, false, 0);
         allTransactions.push(_tx);
 
         initiator = msg.sender;
+
+        return true;
     }
 
     // approve tx to be executed
@@ -59,9 +67,12 @@ contract MultiSigWallet is Modifiers{
         txExecutedOnce(txId) 
         txExists(txId) 
         txNotConfirmed(txId)
+        returns(bool)
     {   
         allTransactions[txId].numberOfConfirmations += 1;
         transactionApprovals[txId][msg.sender] = true;
+
+        return true; 
     }
 
     // execute transaction
@@ -72,6 +83,7 @@ contract MultiSigWallet is Modifiers{
         isTheOwner(msg.sender)
         txExecutedOnce(txId) 
         txExists(txId) 
+        returns(bool)
     {
         Transaction memory _tx = allTransactions[txId];
 
@@ -82,6 +94,8 @@ contract MultiSigWallet is Modifiers{
         (bool succes, ) = _tx.recipient.call{value: _tx.value}(_tx.data);
 
         require(succes, "Transaction reverted -custom-");
+
+        return true;
     }
 
     // revoke the confirmation
@@ -92,6 +106,7 @@ contract MultiSigWallet is Modifiers{
         isTheOwner(msg.sender)
         txExecutedOnce(txId)
         txExists(txId) 
+        returns(bool)
     {
         Transaction memory _tx = allTransactions[txId];
 
@@ -100,6 +115,8 @@ contract MultiSigWallet is Modifiers{
         _tx.numberOfConfirmations -= 1;
 
         transactionApprovals[txId][msg.sender] = false;
+
+        return true;
     }
 
     // revoke the transaction
@@ -110,6 +127,7 @@ contract MultiSigWallet is Modifiers{
         isTheOwner(msg.sender)
         txExecutedOnce(txId)
         txExists(txId)
+        returns(bool)
     {
         require(txId == allTransactions.length - 1, "tx must be the last one");
         require(msg.sender == initiator, "the initiator can revoke submision");
@@ -119,5 +137,7 @@ contract MultiSigWallet is Modifiers{
         for(uint256 i = 0; i < owners.length; i++){
             transactionApprovals[txId][owners[i]] = false;
         }
+
+        return true;
     }
 }
