@@ -17,12 +17,14 @@ async function main () {
     }
 
     const signer = new ethers.Wallet(SECRET_KEY, provider);
-    wait signer.signTransaction(tx);
+    //await signer.signTransaction(tx);
 
-    const Signer = signer.connect(provider);
+    //const Signer = signer.connect(provider);
 
-    const confirmation = await Signer.sendTransaction(tx);
-    console.log(confirmation);
+    //const confirmation = await signer.sendTransaction(tx);
+    //console.log(confirmation);
+
+    console.log(await provider.getBalance(address))
   }
   
   main()

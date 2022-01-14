@@ -2,35 +2,41 @@
 const { ethers } = require("ethers");
 
 async function main()
-{
+{   
     //contract address
-    const contractAddress = "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0";
+    const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
     
     // human readable abi
     const contractAbi = [
+        "function getId() view returns(uint256)",
         "function submit(address recipient, uint256 value, bytes calldata data)",
         "function approve(uint txId)",
         "function execute(uint txId)",
         "function revokeApproval(uint txId)"
     ]
 
-    const SECRET_KEY = process.env.SECRET_KEY_LOCAL;
-
+   
     let provider = new ethers.providers.JsonRpcProvider();
-    const signer = new ethers.Wallet(SECRET_KEY, provider);
-    const account = signer.connect(provider);
+    signer = provider.getSigner(0)
 
-    const contract = new ethers.Contract(contractAddress, contractAbi, provider);
-    
-    const addressTo = "0xdd2fd4581271e230360230f9337d5c0430bf44c0";
+    const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
-    const operation1 = await contract.submit(addressTo, 1, "0x0");
-    //const operation2 = await contract.execute(0);
-    console.log(operation1);
+    //console.log(contract)
+    const operation1 = await contract.getId();
+    console.log(operation1)
+    //console.log(await provider.getCode("0x5FbDB2315678afecb367f032d93F642f64180aa3"))
+    //console.log(await provider.getTransactionCount("0x5FbDB2315678afecb367f032d93F642f64180aa3"))
 }
 
 
 main()
-.then(() => process.exit(0))
-.catch(() => process.exit(1));
+.then(() => 
+{
+    process.exit(0)
+})
+.catch((err) => 
+{
+    console.log(err)
+    process.exit(1)
+});
 

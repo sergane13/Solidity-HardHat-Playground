@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+
 const utils = require("ethers").utils;
-const { MockProvider } = require('ethereum-waffle');
 
 describe("MultiSigWallet", function () {
   
@@ -12,7 +12,7 @@ describe("MultiSigWallet", function () {
     await contract.deployed(); 
   })
 
-
+  // check if tx has been reverted
   it("Shall revert the transaction", async function () {
     expect(contract.submit(
       "0xdd2fd4581271e230360230f9337d5c0430bf44c0",
@@ -21,6 +21,7 @@ describe("MultiSigWallet", function () {
     )).to.be.revertedWith('Not enough tokens to extract');            
 
   });
+
 
   it("Shall fund the contract", async () => 
   {
@@ -33,45 +34,36 @@ describe("MultiSigWallet", function () {
     }
 
     const signer = new ethers.Wallet(SECRET_KEY, provider);
-    const Signer = signer.connect(provider);
 
-    //console.log(await signer.getBalance())
-
-    const confirmation = await Signer.sendTransaction(tx);
-    await Signer.signTransaction(confirmation);
-
-    console.log(await contract.getId())
-    //console.log(await provider.getBalance(contract.address))
-
-    expect(confirmation).to.changeEtherBalance(contract.address, ethers.utils.parseEther("0.1"))
-    .catch((err) => 
-    {
-      //console.log(err)
-    });
+    await signer.sendTransaction(tx);
+  
+    let num = ethers.BigNumber.from(3);
+    expect(await provider.getBalance(contract.address) / (10 ** 18)).to.equal(num)
   })
 
-  // it("Shall aprove the tx", async () => 
-  // {
-  //   const contract = await deployContract() 
-  
-  //   const provider = new MockProvider();
-  //   const [wallet, otherWallet] = provider.getWallets();
 
-  //   tx = {
-  //     to: contract.address,
-  //     value: utils.parseEther("4.0")
-  //   }
+  it("Shall aprove the tx", async () => 
+  {
+    const provider = new ethers.providers.JsonRpcProvider()
+    const SECRET_KEY = process.env.SECRET_KEY_LOCAL;
 
-  //   const tempvalue = await wallet.sendTransaction(tx)
+    tx = {
+      to: contract.address,
+      value: utils.parseEther("3.0")
+    }
+
+    const wallet = new ethers.Wallet(SECRET_KEY, provider);
+
+    await wallet.sendTransaction(tx)
     
-  //   await contract.submit(
-  //     "0xdd2fd4581271e230360230f9337d5c0430bf44c0",
-  //     2,
-  //     '0x00')
+    const submitingTx = await contract.callStatic.submit(
+      "0xdd2fd4581271e230360230f9337d5c0430bf44c0",
+      2,
+      '0x00')
 
-  //   console.log(await contract.getId())
+    expect(submitingTx).to.equal(true)
+  })
 
-  //   console.log(await tempvalue)
-  //   expect(await contract.approve(0)).to.equal(true)
-  // })
+
+  
 });
