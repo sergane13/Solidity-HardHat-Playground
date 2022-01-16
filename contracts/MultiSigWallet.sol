@@ -3,6 +3,7 @@
 pragma solidity 0.8.11;
 
 import "./Modifiers.sol";
+import "hardhat/console.sol";
 
 contract MultiSigWallet is Modifiers{
     
@@ -93,7 +94,7 @@ contract MultiSigWallet is Modifiers{
 
         (bool succes, ) = _tx.recipient.call{value: _tx.value}(_tx.data);
 
-        require(succes, "Transaction reverted -custom-");
+        require(succes, "Transaction reverted");
 
         return true;
     }
